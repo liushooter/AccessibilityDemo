@@ -1,4 +1,4 @@
-package com.example.zhouzhihui.accessibilitydemo.access
+package com.example.zhouzhihui.wechathelper.access
 
 import android.accessibilityservice.AccessibilityService
 import android.view.accessibility.AccessibilityEvent

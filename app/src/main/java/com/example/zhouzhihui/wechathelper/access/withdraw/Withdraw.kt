@@ -1,9 +1,9 @@
-package com.example.zhouzhihui.accessibilitydemo.access.withdraw
+package com.example.zhouzhihui.wechathelper.access.withdraw
 
 import android.util.Log
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
-import com.example.zhouzhihui.accessibilitydemo.access.TAG
+import com.example.zhouzhihui.wechathelper.access.TAG
 import java.util.*
 
 /**

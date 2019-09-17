@@ -1,4 +1,4 @@
-package com.example.zhouzhihui.accessibilitydemo
+package com.example.zhouzhihui.wechathelper
 
 import org.junit.Test
 

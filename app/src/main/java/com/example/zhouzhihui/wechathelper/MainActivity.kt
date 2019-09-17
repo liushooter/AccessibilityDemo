@@ -1,10 +1,10 @@
-package com.example.zhouzhihui.accessibilitydemo
+package com.example.zhouzhihui.wechathelper
 
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.Settings
-import com.example.zhouzhihui.accessibilitydemo.access.isAccessibilityServiceOn
+import com.example.zhouzhihui.wechathelper.access.isAccessibilityServiceOn
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {

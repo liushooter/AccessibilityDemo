@@ -1,4 +1,4 @@
-package com.example.zhouzhihui.accessibilitydemo
+package com.example.zhouzhihui.wechathelper
 
 import android.support.test.InstrumentationRegistry
 import android.support.test.runner.AndroidJUnit4

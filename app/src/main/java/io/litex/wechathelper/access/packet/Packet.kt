@@ -1,4 +1,4 @@
-package com.example.zhouzhihui.wechathelper.access.packet
+package io.litex.wechathelper.access.packet
 
 import android.app.Notification
 import android.app.PendingIntent
@@ -6,7 +6,7 @@ import android.text.TextUtils
 import android.util.Log
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
-import com.example.zhouzhihui.wechathelper.access.TAG
+import io.litex.wechathelper.access.TAG
 
 /**
  * Created by 周智慧 on 22/01/2018.

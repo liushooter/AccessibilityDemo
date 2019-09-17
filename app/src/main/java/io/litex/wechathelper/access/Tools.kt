@@ -1,4 +1,4 @@
-package com.example.zhouzhihui.wechathelper.access
+package io.litex.wechathelper.access
 
 import android.accessibilityservice.AccessibilityService
 import android.content.Context

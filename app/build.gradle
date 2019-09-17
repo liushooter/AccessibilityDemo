@@ -7,7 +7,7 @@ apply plugin: 'kotlin-android-extensions'
 android {
     compileSdkVersion 26
     defaultConfig {
-        applicationId "com.example.zhouzhihui.accessibilitydemo"
+        applicationId "io.litex.wechathelper"
         minSdkVersion 19
         targetSdkVersion 26
         versionCode 1

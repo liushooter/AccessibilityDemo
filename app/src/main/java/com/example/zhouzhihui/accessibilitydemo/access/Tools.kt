@@ -23,7 +23,8 @@ fun isPrePagePacket(prePageName: String): Boolean {
 }
 
 fun Context.isAccessibilityServiceOn(): Boolean {
-    var service = "${packageName}/${MyAccessibilityService::class.java.canonicalName}"
+
+    var service = "${packageName}/${HelperService::class.java.canonicalName}"
     var enabled = Settings.Secure.getInt(applicationContext.contentResolver, Settings.Secure.ACCESSIBILITY_ENABLED)
     var splitter = TextUtils.SimpleStringSplitter(':')
     if (enabled == 1) {

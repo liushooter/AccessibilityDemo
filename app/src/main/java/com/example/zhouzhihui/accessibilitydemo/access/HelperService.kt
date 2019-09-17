@@ -7,7 +7,7 @@ import android.view.accessibility.AccessibilityEvent
  * Created by 周智慧 on 22/01/2018.
  */
 
-class MyAccessibilityService : AccessibilityService() {
+class HelperService : AccessibilityService() {
     override fun onInterrupt() {
     }
 

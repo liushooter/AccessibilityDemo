@@ -11,12 +11,20 @@ import io.litex.wechathelper.access.withdraw.Withdraw
 fun dispatchEvent(event: AccessibilityEvent?, rootInActiveWindow: AccessibilityNodeInfo?) {
     val pkgName = event?.packageName.toString()
     val eventType = event?.getEventType()
+
     Log.i(TAG, "pkgName:${pkgName}     eventType:${eventType}      className:${event?.getClassName().toString()}      " +
             "event.text:${listToString(event?.text)} event?.getContentChangeTypes():${event?.getContentChangeTypes()}\n")
+
     when (eventType) {
+
         AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED -> io.litex.wechathelper.access.packet.handleNotification(event)//64     1-->click
+
+
         AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED, AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED -> {//32 2048
+
+
             val className = event.getClassName().toString()
+
             if (className == "com.tencent.mm.ui.LauncherUI" || className == "com.tencent.mm.ui.mogic.WxViewPager" || className == "android.widget.EditText"/* || className == "android.widget.ListView"*/) {
                 io.litex.wechathelper.access.packet.searchPacket(rootInActiveWindow)
             } else if (className == "com.tencent.mm.plugin.luckymoney.ui.LuckyMoneyReceiveUI") {//com.tencent.mm.plugin.luckymoney.ui.LuckyMoneyPrepareUI

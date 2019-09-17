@@ -18,6 +18,7 @@ fun handleNotification(event: AccessibilityEvent?) {
     val texts = event.text
     if (!texts.isEmpty()) {
         for (text in texts) {
+            Log.e(">>>  event text ", text.toString() )
             val content = text.toString()
             if (content.contains("[微信红包]")) {
                 if (event.parcelableData != null && event.parcelableData is Notification) {
@@ -35,21 +36,28 @@ fun handleNotification(event: AccessibilityEvent?) {
     }
 }
 
+
 fun searchPacket(rootInActiveWindow: AccessibilityNodeInfo?) {
     Log.i(TAG, "searchPacket node: ${rootInActiveWindow} childCount: ${rootInActiveWindow?.childCount}   idName: ${rootInActiveWindow?.getViewIdResourceName()}")
+
+
     if (rootInActiveWindow?.text.toString() == "领取红包") {
+
         if (rootInActiveWindow?.isClickable == true) {
-            rootInActiveWindow.performAction(AccessibilityNodeInfo.ACTION_CLICK)
+            rootInActiveWindow.performAction(AccessibilityNodeInfo.ACTION_CLICK) // 点击事件
         } else {
-            var parent: AccessibilityNodeInfo? = rootInActiveWindow?.getParent()
+
+            var parent: AccessibilityNodeInfo? = rootInActiveWindow?.getParent() // 父节点
             while (parent != null) {
                 if (parent.isClickable) {
-                    parent.performAction(AccessibilityNodeInfo.ACTION_CLICK)
+                    parent.performAction(AccessibilityNodeInfo.ACTION_CLICK) // 点击事件
                     break
                 }
                 parent = parent.parent
             }
         }
+
+
     } else {
         for (i in 0 until (rootInActiveWindow?.childCount ?: -1)) {
             searchPacket(rootInActiveWindow?.getChild(i))
@@ -60,7 +68,7 @@ fun searchPacket(rootInActiveWindow: AccessibilityNodeInfo?) {
 fun openPacket(rootInActiveWindow: AccessibilityNodeInfo?) {
     Log.i(TAG, "openPacket node: ${rootInActiveWindow} childCount: ${rootInActiveWindow?.childCount}   idName: ${rootInActiveWindow?.getViewIdResourceName()}")
     if (rootInActiveWindow?.isClickable == true && rootInActiveWindow?.className?.contains("android.widget.Button") == true) {
-        rootInActiveWindow?.performAction(AccessibilityNodeInfo.ACTION_CLICK)
+        rootInActiveWindow?.performAction(AccessibilityNodeInfo.ACTION_CLICK) // 点击事件
     }
 //        node?.traversalAfter
     for (i in 0 until (rootInActiveWindow?.childCount ?: -1)) {
@@ -72,9 +80,10 @@ fun closePacket(rootInActiveWindow: AccessibilityNodeInfo?) {
     Log.i(TAG, "closePacket node: ${rootInActiveWindow} childCount: ${rootInActiveWindow?.childCount}   idName: ${rootInActiveWindow?.getViewIdResourceName()}")
     if (rootInActiveWindow?.className == "android.widget.LinearLayout" && rootInActiveWindow?.isClickable && TextUtils.isEmpty(rootInActiveWindow?.text)) {
         //className: android.widget.LinearLayout; text: null; error: null; maxTextLength: -1; contentDescription: null; viewIdResName: com.tencent.mm:id/ho;
-        rootInActiveWindow?.performAction(AccessibilityNodeInfo.ACTION_CLICK)
+        rootInActiveWindow?.performAction(AccessibilityNodeInfo.ACTION_CLICK) // 点击事件
         return
     }
+
     for (i in 0 until (rootInActiveWindow?.childCount ?: -1)) {
         closePacket(rootInActiveWindow?.getChild(i))
     }

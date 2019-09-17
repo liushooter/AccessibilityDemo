@@ -15,6 +15,7 @@ fun listToString(list : List<Any>?): String {
     list?.forEach {
         result.append("${it.toString()}\t")
     }
+
     return result.toString()
 }
 

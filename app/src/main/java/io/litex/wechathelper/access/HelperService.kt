@@ -130,14 +130,37 @@ class HelperService : AccessibilityService() {
 
 
 
+
                 var prices = win.findAccessibilityNodeInfosByViewId(priceTxt)
                 Log.e("price", prices.size.toString() )
+
+                if (1 == prices.size){
+                    var priceStr  = prices.first().text
+                    Log.e("price Text",  priceStr.toString())
+                }
 
                 var whos = win.findAccessibilityNodeInfosByViewId(whoSellTxt)
                 Log.e("whos", whos.size.toString() )
 
-                var getMoneyWho  = win.findAccessibilityNodeInfosByViewId(getMoneyTxt)
+                if (1 == whos.size){
+                    var whoStr = whos.first().text
+                    Log.e("price Text",  whoStr.toString())
+                }
+
+
+                var getMoneyWho = win.findAccessibilityNodeInfosByViewId(getMoneyTxt)
                 Log.e("getMoneyWho", getMoneyWho.size.toString() )
+
+                if ( 1 == getMoneyWho.size){
+                    var getMoneyWhoStr = getMoneyWho.first().text
+
+                    Log.e("price Text",  getMoneyWhoStr.toString())
+                }
+
+
+                if (1 == zhifus.size){
+//                    var getMoneyWhoStr = zhifus.first().isClickable
+                }
 
             }
 

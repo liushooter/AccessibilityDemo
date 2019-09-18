@@ -17,6 +17,7 @@ class HelperService : AccessibilityService() {
     val priceTxt = "com.tencent.mm:id/fng"  // 价格文本
     val whoSellTxt = "com.tencent.mm:id/fpa"  // 卖家
     val getMoneyTxt = "com.tencent.mm:id/fne" // 收款方
+    val payCheckBox = "com.tencent.mm:id/fsd" // 付款选项
 
     override fun onInterrupt() {
         onServiceConnected()
@@ -119,18 +120,6 @@ class HelperService : AccessibilityService() {
 
             if(zhifus.size > 0 ){
 
-                for (ele in zhifus){
-
-                    Log.e("zhihu >>>>>" , ele.isClickable.toString())
-
-                    if(ele.isClickable){
-                        Log.e("+++++", "please click")
-                    }
-                }
-
-
-
-
                 var prices = win.findAccessibilityNodeInfosByViewId(priceTxt)
                 Log.e("price", prices.size.toString() )
 
@@ -159,7 +148,12 @@ class HelperService : AccessibilityService() {
 
 
                 if (1 == zhifus.size){
-//                    var getMoneyWhoStr = zhifus.first().isClickable
+
+                    var zhifubtn = zhifus.first()
+
+                   if( zhifubtn.isClickable ){
+                       zhifubtn.performAction(AccessibilityNodeInfo.ACTION_CLICK) // 点击事件
+                   }
                 }
 
             }

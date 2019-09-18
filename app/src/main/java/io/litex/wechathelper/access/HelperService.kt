@@ -13,6 +13,11 @@ import java.util.concurrent.TimeUnit
 
 class HelperService : AccessibilityService() {
 
+    val zhifuBtn = "com.tencent.mm:id/fpv"  // 立即支付按钮 id
+    val priceTxt = "com.tencent.mm:id/fng"  // 价格文本
+    val whoSellTxt = "com.tencent.mm:id/fpa"  // 卖家
+    val getMoneyTxt = "com.tencent.mm:id/fne" // 收款方
+
     override fun onInterrupt() {
         onServiceConnected()
     }
@@ -95,6 +100,44 @@ class HelperService : AccessibilityService() {
                     TimeUnit.MILLISECONDS.sleep(500L) // 0.5 second
                     scans[1].performAction(AccessibilityNodeInfo.ACTION_CLICK) // 点击事件
                 }
+
+            }
+
+            ///// 进入到 支付流程 ///////
+//            查询 支付 btn
+//            如果有进入下一个流程：
+//            读取 谁家卖的产品
+//                 金额
+//                 收款方
+
+
+
+            var zhifus = win.findAccessibilityNodeInfosByViewId(zhifuBtn) // win 来自 rootInActiveWindow
+
+
+            Log.e("=============== zhifus", zhifus.size.toString() )
+
+            if(zhifus.size > 0 ){
+
+                for (ele in zhifus){
+
+                    Log.e("zhihu >>>>>" , ele.isClickable.toString())
+
+                    if(ele.isClickable){
+                        Log.e("+++++", "please click")
+                    }
+                }
+
+
+
+                var prices = win.findAccessibilityNodeInfosByViewId(priceTxt)
+                Log.e("price", prices.size.toString() )
+
+                var whos = win.findAccessibilityNodeInfosByViewId(whoSellTxt)
+                Log.e("whos", whos.size.toString() )
+
+                var getMoneyWho  = win.findAccessibilityNodeInfosByViewId(getMoneyTxt)
+                Log.e("getMoneyWho", getMoneyWho.size.toString() )
 
             }
 

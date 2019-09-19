@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
 import java.util.concurrent.TimeUnit
+import java.io.DataOutputStream
 
 
 /**
@@ -49,10 +50,10 @@ class HelperService : AccessibilityService() {
 
         var win = rootInActiveWindow
 
-        var wxList = win.findAccessibilityNodeInfosByText("发现")
 
+        if (false) {
 
-        if (null != wxList) {
+            var wxList = win.findAccessibilityNodeInfosByText("发现")
 
             Log.e(">>> wxlist size", wxList.size.toString())
 
@@ -166,19 +167,14 @@ class HelperService : AccessibilityService() {
             ///// 进入到另一种支付流程 ///////
             //    bili
 
-            Log.e("bili >>", "bili>>")
-            Log.e("bili >>", "bili>>")
-            Log.e("bili >>", "bili>>")
-            Log.e("bili >>", "bili>>")
-            Log.e("bili >>", "bili>>")
-            Log.e("bili >>", "bili>>")
-
-
             val biliPaybtn = "com.tencent.mm:id/b0f"
             val biliPayPriceTxt = "com.tencent.mm:id/drj"
 
             var biliPayPrices = win.findAccessibilityNodeInfosByViewId(biliPayPriceTxt)
             var biliPays = win.findAccessibilityNodeInfosByViewId(biliPaybtn)
+
+            Log.e(" biliPayPrices >>>>> ", biliPayPrices.size.toString())
+            Log.e(" biliPays >>>>> ", biliPays.size.toString())
 
 
             if (biliPayPrices.size>0 && biliPays.size >0 ){ //
@@ -188,10 +184,11 @@ class HelperService : AccessibilityService() {
                 Log.e("bili price >>>>> ", _price)
 
                 if(biliPays.first().isClickable) {
-                    TimeUnit.MILLISECONDS.sleep(5000L) // 5 second
+                    TimeUnit.MILLISECONDS.sleep(1000L) // 5 second
                     biliPays.first().performAction(AccessibilityNodeInfo.ACTION_CLICK)
                 }
             }
+
 
 //
 //            ///// 进入到 支付余额不足 ///////
@@ -211,9 +208,65 @@ class HelperService : AccessibilityService() {
         }
 
 
+        ///// 输入密码 ///////
+        // bili
+        // 请输入支付密码
+
+
+        if (win != null) {
+            var comps = win.findAccessibilityNodeInfosByViewId("com.tencent.mm:id/fsm")
+            Log.e("comps size", comps.size.toString())
+
+
+            if (comps.size > 0 ) {
+
+                Log.e(">>>>>>> comps ", comps.size.toString())
+
+
+                perforGlobalClick(540, 2022)
+                TimeUnit.MILLISECONDS.sleep(300L) //  0.3 second
+
+                perforGlobalClick(157, 1864)
+                TimeUnit.MILLISECONDS.sleep(300L) //  0.3 second
+
+                perforGlobalClick(499, 1699)
+                TimeUnit.MILLISECONDS.sleep(300L) //  0.3 second
+
+                perforGlobalClick(872, 1540)
+                TimeUnit.MILLISECONDS.sleep(300L) //  0.3 second
+
+                perforGlobalClick(858, 1670)
+                TimeUnit.MILLISECONDS.sleep(300L) //  0.3 second
+
+                perforGlobalClick(890, 1879)
+                TimeUnit.MILLISECONDS.sleep(300L) //  0.3 second
+
+            }
+        }
+
+    }
+
+    fun execShellCmd(cmd : String) {
+        Log.e("execShellCmd", "execShellCmd")
+
+        //  https://blog.csdn.net/u013147734/article/details/78490629
+
+        val process = Runtime.getRuntime().exec("sh")  //su为root用户,sh普通用户
+
+        val outputStream = process.outputStream
+        val dataOutputStream = DataOutputStream(outputStream)
+
+        dataOutputStream.writeBytes(cmd)
+        dataOutputStream.flush()
+        dataOutputStream.close()
+        outputStream.close()
 
     }
 
 
+    fun perforGlobalClick(x: Int, y: Int) {
+        Log.e("perforGlobalClick", "perforGlobalClick")
+        execShellCmd("input tap $x $y")
+    }
 }
 

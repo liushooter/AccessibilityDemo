@@ -20,7 +20,7 @@ class HelperService : AccessibilityService() {
     val payCheckBox = "com.tencent.mm:id/fsd" // 付款选项
 
     override fun onInterrupt() {
-        onServiceConnected()
+//        onServiceConnected()
     }
 
     override fun onServiceConnected() {
@@ -104,7 +104,7 @@ class HelperService : AccessibilityService() {
 
             }
 
-            ///// 进入到 支付流程 ///////
+            ///// 进入到 Apple 支付流程 ///////
 //            查询 支付 btn
 //            如果有进入下一个流程：
 //            读取 谁家卖的产品
@@ -151,12 +151,62 @@ class HelperService : AccessibilityService() {
 
                     var zhifubtn = zhifus.first()
 
-                   if( zhifubtn.isClickable ){
-                       zhifubtn.performAction(AccessibilityNodeInfo.ACTION_CLICK) // 点击事件
-                   }
+                    if( zhifubtn.isClickable ){
+                        zhifubtn.performAction(AccessibilityNodeInfo.ACTION_CLICK) // 点击事件
+                    }
                 }
 
             }
+
+
+            ///// 进入到另一种支付流程 ///////
+            //    火车票
+
+
+            ///// 进入到另一种支付流程 ///////
+            //    bili
+
+            Log.e("bili >>", "bili>>")
+            Log.e("bili >>", "bili>>")
+            Log.e("bili >>", "bili>>")
+            Log.e("bili >>", "bili>>")
+            Log.e("bili >>", "bili>>")
+            Log.e("bili >>", "bili>>")
+
+
+            val biliPaybtn = "com.tencent.mm:id/b0f"
+            val biliPayPriceTxt = "com.tencent.mm:id/drj"
+
+            var biliPayPrices = win.findAccessibilityNodeInfosByViewId(biliPayPriceTxt)
+            var biliPays = win.findAccessibilityNodeInfosByViewId(biliPaybtn)
+
+
+            if (biliPayPrices.size>0 && biliPays.size >0 ){ //
+
+                var _price = biliPayPrices.first().text.toString()
+
+                Log.e("bili price >>>>> ", _price)
+
+                if(biliPays.first().isClickable) {
+                    TimeUnit.MILLISECONDS.sleep(5000L) // 5 second
+                    biliPays.first().performAction(AccessibilityNodeInfo.ACTION_CLICK)
+                }
+            }
+
+//
+//            ///// 进入到 支付余额不足 ///////
+//
+//            var cks = win.findAccessibilityNodeInfosByViewId(payCheckBox)
+//            Log.e(">>>>  cks", cks.size.toString())
+//
+//            for (ele in cks ) {
+//                Log.e("isClicked" , ele.isClickable.toString())
+//                Log.e("isCheckable", ele.isCheckable.toString())
+//                Log.e("text", ele.text.toString())
+//            }
+
+
+            ///// 进入 支付环节 ///////
 
         }
 

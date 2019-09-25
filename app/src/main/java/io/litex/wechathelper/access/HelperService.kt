@@ -1,16 +1,17 @@
 package io.litex.wechathelper.access
 
-import android.accessibilityservice.AccessibilityService
 import android.util.Log
+import java.util.concurrent.TimeUnit
+import android.accessibilityservice.AccessibilityService
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
-import java.util.concurrent.TimeUnit
-import java.io.DataOutputStream
+import android.R.string
 
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.Response
+import android.os.StrictMode
 
-/**
- * Created by 周智慧 on 22/01/2018.
- */
 
 class HelperService : AccessibilityService() {
 
@@ -30,12 +31,26 @@ class HelperService : AccessibilityService() {
 
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
 
+        if (android.os.Build.VERSION.SDK_INT > 9) {
+            val policy = StrictMode.ThreadPolicy.Builder()
+                    .permitAll().build()
+
+            StrictMode.setThreadPolicy(policy)
+        }
+
+        Log.e("SDK_INT", android.os.Build.VERSION.SDK_INT.toString())
+
+
 //        dispatchEvent(event, rootInActiveWindow) // getRootInActiveWindow
 
         Log.e(TAG, "==============Start====================")
-//
-//        val eventType = event?.getEventType()
-//
+
+        val eventType = event?.getEventType()
+        Log.e("eventType >>>", eventType.toString() )
+
+        Log.e(TAG, "==============End====================")
+
+
 //        when (eventType) {
 //            AccessibilityEvent.TYPE_VIEW_CLICKED -> Log.e(">>> ev","TYPE_VIEW_CLICKED")
 //            AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED -> Log.e(">>> ev", "TYPE_NOTIFICATION_STATE_CHANGED")
@@ -45,8 +60,7 @@ class HelperService : AccessibilityService() {
 //            AccessibilityEvent.TYPE_VIEW_LONG_CLICKED -> Log.e(">>> ev", "TYPE_VIEW_LONG_CLICKED")
 //
 //        }
-//
-//        Log.e(TAG, "==============End====================")
+        
 
         var win = rootInActiveWindow
 
@@ -219,54 +233,29 @@ class HelperService : AccessibilityService() {
 
 
             if (comps.size > 0 ) {
-
                 Log.e(">>>>>>> comps ", comps.size.toString())
 
+                var url = "http://192.168.50.231:7001/"
+                var resp = getSync(url)
+                var bodyStr = resp.body!!.string()
 
-                perforGlobalClick(540, 2022)
-                TimeUnit.MILLISECONDS.sleep(300L) //  0.3 second
+                Log.e("<<<< httpbody >>>", bodyStr)
 
-                perforGlobalClick(157, 1864)
-                TimeUnit.MILLISECONDS.sleep(300L) //  0.3 second
-
-                perforGlobalClick(499, 1699)
-                TimeUnit.MILLISECONDS.sleep(300L) //  0.3 second
-
-                perforGlobalClick(872, 1540)
-                TimeUnit.MILLISECONDS.sleep(300L) //  0.3 second
-
-                perforGlobalClick(858, 1670)
-                TimeUnit.MILLISECONDS.sleep(300L) //  0.3 second
-
-                perforGlobalClick(890, 1879)
-                TimeUnit.MILLISECONDS.sleep(300L) //  0.3 second
+                TimeUnit.MILLISECONDS.sleep(1000L)
 
             }
         }
 
     }
 
-    fun execShellCmd(cmd : String) {
-        Log.e("execShellCmd", "execShellCmd")
+    //同步Get请求
+    fun getSync(url: String): Response {
+        val request = Request.Builder().url(url).build()
 
-        //  https://blog.csdn.net/u013147734/article/details/78490629
+        val response = OkHttpClient().newCall(request).execute()
 
-        val process = Runtime.getRuntime().exec("sh")  //su为root用户,sh普通用户
-
-        val outputStream = process.outputStream
-        val dataOutputStream = DataOutputStream(outputStream)
-
-        dataOutputStream.writeBytes(cmd)
-        dataOutputStream.flush()
-        dataOutputStream.close()
-        outputStream.close()
-
+        return response
     }
 
-
-    fun perforGlobalClick(x: Int, y: Int) {
-        Log.e("perforGlobalClick", "perforGlobalClick")
-        execShellCmd("input tap $x $y")
-    }
 }
 

@@ -1,25 +1,31 @@
 package io.litex.wechathelper.access
 
-import android.util.Log
-import java.util.concurrent.TimeUnit
 import android.accessibilityservice.AccessibilityService
+import android.os.StrictMode
+import android.util.Log
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
-import android.R.string
-
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
-import android.os.StrictMode
+import java.util.concurrent.TimeUnit
+import android.widget.TextView
+import okhttp3.FormBody
 
 
 class HelperService : AccessibilityService() {
+
+
+    val Host = "http://192.168.50.231:7001/"
 
     val zhifuBtn = "com.tencent.mm:id/fpv"  // 立即支付按钮 id
     val priceTxt = "com.tencent.mm:id/fng"  // 价格文本
     val whoSellTxt = "com.tencent.mm:id/fpa"  // 卖家
     val getMoneyTxt = "com.tencent.mm:id/fne" // 收款方
     val payCheckBox = "com.tencent.mm:id/fsd" // 付款选项
+    val payViewId = "com.tencent.mm:id/fsm"
+
+    val biliPayBtnViewId = "com.tencent.mm:id/b0f"  // 支付并开通续费
 
     override fun onInterrupt() {
 //        onServiceConnected()
@@ -38,15 +44,34 @@ class HelperService : AccessibilityService() {
             StrictMode.setThreadPolicy(policy)
         }
 
-        Log.e("SDK_INT", android.os.Build.VERSION.SDK_INT.toString())
-
-
 //        dispatchEvent(event, rootInActiveWindow) // getRootInActiveWindow
 
         Log.e(TAG, "==============Start====================")
 
         val eventType = event?.getEventType()
         Log.e("eventType >>>", eventType.toString() )
+
+        var win = rootInActiveWindow
+
+//        event.source()
+
+        if(eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED){ // 当Window发生变化时发送此事件
+            var newWin = rootInActiveWindow
+
+            if(newWin == null){
+                Log.w(TAG,"the rootInActiveWindow is null")
+            }else {
+                Log.i(TAG,"页面切换")
+
+                /////// 发现支付按钮 ///////
+                clickPayBtn(newWin)
+
+                /////// 输入密码 ///////
+                enterPassword(newWin)
+
+            }
+
+        }
 
         Log.e(TAG, "==============End====================")
 
@@ -60,9 +85,6 @@ class HelperService : AccessibilityService() {
 //            AccessibilityEvent.TYPE_VIEW_LONG_CLICKED -> Log.e(">>> ev", "TYPE_VIEW_LONG_CLICKED")
 //
 //        }
-        
-
-        var win = rootInActiveWindow
 
 
         if (false) {
@@ -222,35 +244,134 @@ class HelperService : AccessibilityService() {
         }
 
 
-        ///// 输入密码 ///////
-        // bili
-        // 请输入支付密码
+
+    }
+
+    fun clickPayBtn(rootWin: AccessibilityNodeInfo) {
+
+        // TODO
+        // 金额
+        // 收款方
+        // 付款方
+        // 支付状态
+        //
+
+        var productNameTxts = rootWin.findAccessibilityNodeInfosByViewId("com.tencent.mm:id/d0") // 购买大会员连续包月
+        var priceTxts = rootWin.findAccessibilityNodeInfosByViewId("com.tencent.mm:id/drj")  // 价格
+        var listViews = rootWin.findAccessibilityNodeInfosByViewId("com.tencent.mm:id/cro") // 用户账户
+
+        var biliPayBtns = rootWin.findAccessibilityNodeInfosByViewId(biliPayBtnViewId) // 支付并开通续费
+        // ele instanceof TextView
 
 
-        if (win != null) {
-            var comps = win.findAccessibilityNodeInfosByViewId("com.tencent.mm:id/fsm")
-            Log.e("comps size", comps.size.toString())
+        var productInfo = ""
+
+        if( 1 == productNameTxts.size ) {
+            var txt = productNameTxts.first()
+
+            Log.w("> 产品 className", txt.className.toString())
+            Log.w("> 产品 text" , txt.text.toString())
+
+            productInfo += "?product="+txt.text.toString()
+        }
+
+
+        if( 1 == priceTxts.size ) {
+            var txt = priceTxts.first()
+
+            Log.w("> 价格 txt text" , txt.text.toString())
+
+            productInfo += "&price="+txt.text.toString()
+
+        }
+
+
+        productInfo += "&desc="
+
+        for ( ele in listViews ){ // 4个元素
+            Log.w("> listViews", ele.text.toString())
+            productInfo += ele.text.toString()
+        }
+
+
+        Log.e(TAG, "http")
+        getSync(Host+"getProduceInfo"+productInfo)
+        Log.e(TAG, "http")
+
+
+
+//        if (1 == biliPayBtns.size ) {
+//
+//            var btn = biliPayBtns.first()
+//
+//            if (btn.isClickable) {
+//                btn.performAction(AccessibilityNodeInfo.ACTION_CLICK)
+//            } else {
+//                Log.e(TAG, "biliPayBtn not click")
+//            }
+//        }
+    }
+
+
+
+
+    fun enterPassword(rootWin: AccessibilityNodeInfo) {
+
+        if (null == rootWin) {
+            Log.w(TAG,"the rootInActiveWindow is null")
+        } else {
+            var comps = rootWin.findAccessibilityNodeInfosByViewId(payViewId)
+            Log.w("comps size", comps.size.toString())
 
 
             if (comps.size > 0 ) {
-                Log.e(">>>>>>> comps ", comps.size.toString())
-
                 var url = "http://192.168.50.231:7001/"
-                var resp = getSync(url)
+                var resp = getSync(url + "enterPassword")
                 var bodyStr = resp.body!!.string()
 
-                Log.e("<<<< httpbody >>>", bodyStr)
+                Log.e("<<<< http body >>>", bodyStr)
 
                 TimeUnit.MILLISECONDS.sleep(1000L)
 
             }
+
         }
+
 
     }
 
-    //同步Get请求
+
+    // 同步Get请求
     fun getSync(url: String): Response {
         val request = Request.Builder().url(url).build()
+        val response = OkHttpClient().newCall(request).execute()
+        //TODO
+
+        // 网络状态ok
+        // 服务端有个心跳  客户端一直请求
+        //
+
+        return response
+    }
+
+
+    fun postSync(url: String, parameters: HashMap<String, String>): Response {
+
+        //  https://medium.com/@rohan.s.jahagirdar/android-http-requests-in-kotlin-with-okhttp-5525f879b9e5
+
+        val builder = FormBody.Builder()
+        val it = parameters.entries.iterator()
+
+        while (it.hasNext()) {
+            val pair = it.next() as Map.Entry<*, *>
+            builder.add(pair.key.toString(), pair.value.toString())
+        }
+
+        val formBody = builder.build()
+        val request = Request.Builder()
+                .url(url)
+                .post(formBody)
+                .build()
 
         val response = OkHttpClient().newCall(request).execute()
 

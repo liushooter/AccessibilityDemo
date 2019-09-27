@@ -20,7 +20,7 @@ class HelperService : AccessibilityService() {
 
     val priceTxt = "com.tencent.mm:id/fng"  // 价格文本
     val whoSellTxt = "com.tencent.mm:id/fpa"  // 卖家
-    val getMoneyTxt = "com.tencent.mm:id/fne" // 收款方
+    val payeeTxt = "com.tencent.mm:id/fne" // 收款方
     val payCheckBox = "com.tencent.mm:id/fsd" // 付款选项
 
     val payViewId = "com.tencent.mm:id/fsm"
@@ -59,7 +59,9 @@ class HelperService : AccessibilityService() {
 
 //        event.source()
 
-        if (eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) { // 当Window发生变化时发送此事件
+        if (true ) { // 当Window发生变化时发送此事件
+//            if (eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED || eventType == AccessibilityEvent.CONTENT_CHANGE_TYPE_SUBTREE) { // 当Window发生变化时发送此事件
+
             var newWin = rootInActiveWindow
 
             if (newWin == null) {
@@ -72,8 +74,13 @@ class HelperService : AccessibilityService() {
                 /////// 扫描 ///////
                 scanBtn(newWin)
 
+
                 /////// bili支付按钮 ///////
-                biliClickPayBtn(newWin)
+                // biliClickPayBtn(newWin)
+
+                ///////jd支付按钮 ///////
+                jdClickPayBtn(newWin)
+
 
                 /////// 输入密码 ///////
                 enterPassword(newWin)
@@ -166,7 +173,6 @@ class HelperService : AccessibilityService() {
 
     fun biliClickPayBtn(rootWin: AccessibilityNodeInfo) {
 
-
         // TODO
         // 金额
         // 收款方
@@ -177,7 +183,7 @@ class HelperService : AccessibilityService() {
         var productNameTxts = rootWin.findAccessibilityNodeInfosByViewId("com.tencent.mm:id/d0") // 购买大会员连续包月
         var priceTxts = rootWin.findAccessibilityNodeInfosByViewId("com.tencent.mm:id/drj")  // 价格
         var listViews = rootWin.findAccessibilityNodeInfosByViewId("com.tencent.mm:id/cro") // 用户账户
-        var biliPayBtns = rootWin.findAccessibilityNodeInfosByViewId(jdPayBtnViewId) // 支付并开通续费
+        var biliPayBtns = rootWin.findAccessibilityNodeInfosByViewId(biliPayBtnViewId) // 支付并开通续费
         // ele instanceof TextView
 
         if (biliPayBtns.size > 0) {
@@ -229,6 +235,66 @@ class HelperService : AccessibilityService() {
             }
 
 
+        }
+    }
+
+
+    fun jdClickPayBtn(rootWin: AccessibilityNodeInfo) {
+
+        TimeUnit.MILLISECONDS.sleep(1000L) // 0.5 second
+
+        Log.e("jdClickPayBtn++", "jdClickPayBtn")
+
+        // TODO
+        // 金额
+        // 收款方
+        // 付款方
+        // 支付状态
+        //
+
+        var payeeTxts = rootWin.findAccessibilityNodeInfosByViewId(payeeTxt)  // 收款方
+        var priceTxts = rootWin.findAccessibilityNodeInfosByViewId(priceTxt)  // 价格
+        var jdPayBtns = rootWin.findAccessibilityNodeInfosByViewId(jdPayBtnViewId) // 支付
+
+        Log.e(">>>> jdPayBtns << ", jdPayBtns.size.toString())
+
+        // ele instanceof TextView
+
+        if (jdPayBtns.size > 0) {
+
+            var productInfo = ""
+
+
+            if (1 == payeeTxts.size) {
+                var ele = payeeTxts.first()
+
+                productInfo += "?payee=" + ele.text.toString()
+
+            }
+
+            if (1 == priceTxts.size) {
+                var txt = priceTxts.first()
+
+                Log.w("> 价格 txt text", txt.text.toString())
+                productInfo += "&price=" + txt.text.toString()
+
+            }
+
+//            Log.e(TAG, "http")
+//            getSync(Host + "getProduceInfo" + productInfo)
+//            Log.e(TAG, "http")
+
+
+            if ( jdPayBtns.size > 0 ) {
+
+                var payBtn = jdPayBtns.first()
+
+                if (payBtn.isClickable) {
+                    payBtn.performAction(AccessibilityNodeInfo.ACTION_CLICK)
+                } else {
+                    Log.e(TAG, "payBtn not click")
+                }
+            }
         }
     }
 
